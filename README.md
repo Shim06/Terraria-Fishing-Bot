@@ -2,7 +2,9 @@
 
 Terraria Fishing Bot is a program that uses image recognition to fish automatically in Terraria. The script uses [PyAutoGUI](https://pypi.org/project/PyAutoGUI/) and [OpenCV](https://pypi.org/project/opencv-python/) to scan the screen of any text that come from fishing while using a sonar potion. 
 
-https://github.com/Shim06/Terraria-Fishing-Bot/assets/50046854/914f3401-105b-4317-9982-65105a6eeba5
+https://github.com/Shim06/Terraria-Fishing-Bot/assets/50046854/47f02e6d-a93a-46e2-8676-038f30ce4a12
+
+-105b-4317-9982-65105a6eeba5
 
 ## Getting Started
 
