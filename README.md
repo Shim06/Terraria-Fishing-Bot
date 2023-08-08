@@ -4,8 +4,6 @@ Terraria Fishing Bot is a program that uses image recognition to fish automatica
 
 https://github.com/Shim06/Terraria-Fishing-Bot/assets/50046854/47f02e6d-a93a-46e2-8676-038f30ce4a12
 
--105b-4317-9982-65105a6eeba5
-
 ## Getting Started
 
 1. Download the RAR file from the releases section.
