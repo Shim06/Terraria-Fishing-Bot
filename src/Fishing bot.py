@@ -1,14 +1,14 @@
+import customtkinter
+import cv2
+import json
+from multiprocessing import Process, freeze_support, Event, Queue
 import os
 from pathlib import Path
-import json
-import customtkinter
-from multiprocessing import Process, freeze_support, Event, Queue
-import threading
-import cv2
+from PIL import Image
 import pyautogui
+import threading
 import time
 import win32api
-from PIL import Image
 
 
 class App(customtkinter.CTk):
@@ -137,7 +137,7 @@ class App(customtkinter.CTk):
                                                   "Wooden Crate", "Zephyr Fish"])
         self.catches.grid(row=1, column=0, padx=20, pady=(5, 0))
 
-        self.selected_catches = customtkinter.CTkTextbox(optionsTab, height=240)
+        self.selected_catches = customtkinter.CTkTextbox(optionsTab, height=215)
         self.selected_catches.grid(row=2, column=0, padx=(10), pady=(10, 0), sticky="nsew")
 
         self.add_button = customtkinter.CTkButton(optionsTab, text="Add",
@@ -151,20 +151,28 @@ class App(customtkinter.CTk):
 
         self.remember_list_switch = customtkinter.CTkSwitch(optionsTab, text="Remember catch list",
                                                             command=self.save_switch_preferences)
-        self.remember_list_switch.grid(row=5, column=0, padx=(10), pady=(20, 0), sticky="nsew")
+        self.remember_list_switch.grid(row=5, column=0, padx=(10), pady=(15, 0), sticky="nsew")
 
         self.auto_drink_switch = customtkinter.CTkSwitch(optionsTab, text="Auto drink potion",
                                                          command=self.save_switch_preferences)
-        self.auto_drink_switch.grid(row=6, column=0, padx=(10), pady=(20, 0), sticky="nsew")
+        self.auto_drink_switch.grid(row=6, column=0, padx=(10), pady=(15, 0), sticky="nsew")
 
-        if preferences["Remember List"] == True:
+        self.grayscale_switch = customtkinter.CTkSwitch(optionsTab, text="Grayscale",
+                                                         command=self.save_switch_preferences)
+        self.grayscale_switch.grid(row=7, column=0, padx=(10), pady=(15, 0), sticky="nsew")
+
+        if preferences["remember list"] == True:
             self.remember_list_switch.select()
         else:
             self.remember_list_switch.deselect()
-        if preferences["Auto Drink"] == True:
+        if preferences["auto drink"] == True:
             self.auto_drink_switch.select()
         else:
-            self.auto_drink_switch.deselect
+            self.auto_drink_switch.deselect()
+        if preferences["grayscale"] == True:
+            self.grayscale_switch.select()
+        else:
+            self.grayscale_switch.deselect()
 
         # Fishing Statistics
         self.statistics_frame = customtkinter.CTkScrollableFrame(self, width=250)
@@ -381,11 +389,12 @@ class App(customtkinter.CTk):
                 self.log_textbox.configure(state="normal")
                 self.log_textbox.insert("end", f"Fishing location at {x}, {y}.\n\n")
                 self.log_textbox.configure(state="disabled")
-                self.start_fishing(x, y, queue)
+                self.start_fishing(x, y, preferences["grayscale"])
 
-                process2 = Process(target=bot.auto_drink, args=(start_time,))
-                process2.daemon = True
-                process2.start()
+                if preferences["auto drink"] == True:
+                    process2 = Process(target=bot.auto_drink, args=(start_time,))
+                    process2.daemon = True
+                    process2.start()
 
                 pyautogui.mouseDown()
                 time.sleep(0.1)
@@ -395,7 +404,7 @@ class App(customtkinter.CTk):
             if self.stop_fishing_event.is_set():
                 return
 
-    def start_fishing(self, x:int, y:int, queue):
+    def start_fishing(self, x:int, y:int, grayscale: bool):
         catch_list = self.selected_catches.get("0.0", "end")
         create_fish_list_process = Process(
                                     target=bot.create_fish_list(
@@ -404,7 +413,8 @@ class App(customtkinter.CTk):
         create_fish_list_process.start()
         create_fish_list_process.join()
         fish_process = Process(target=bot.fish,
-                                               args=(True, x, y))
+                               args=(True, x, y, 
+                                     grayscale))
         fish_process.daemon = True
         fish_process.start()
 
@@ -429,16 +439,22 @@ class App(customtkinter.CTk):
     def save_switch_preferences(self):
         switch1 = self.remember_list_switch.get()
         switch2 = self.auto_drink_switch.get()
+        switch3 = self.grayscale_switch.get()
 
         if switch1 == 1:
-            preferences["Remember List"] = True
+            preferences["remember list"] = True
         else:
-            preferences["Remember List"] = False
+            preferences["remember list"] = False
         
         if switch2 == 1:
-            preferences["Auto Drink"] = True
+            preferences["auto drink"] = True
         else:
-            preferences["Auto Drink"] = False
+            preferences["auto drink"] = False
+
+        if switch3 == 1:
+            preferences["grayscale"] = True
+        else:
+            preferences["grayscale"] = False
 
         with open (preferences_json, "w") as f:
             json.dump(preferences, f, indent=4)
@@ -455,11 +471,12 @@ class FishingBot():
         self.stop_event = Event()
         self.queue = queue
 
-    def fish(self, fishing: bool, x:int, y:int):
+    def fish(self, fishing: bool, x:int, y:int, preferences: bool):
         while fishing and not self.stop_event.is_set():
             if self.catching != True:
                 for i, img in enumerate(self.images):
-                    catch = pyautogui.locateOnScreen(img, confidence=0.55)
+                    catch = pyautogui.locateOnScreen(img, confidence=0.55,
+                                                     grayscale=preferences)
                     if catch is not None:
                         self.catching = True
                         pyautogui.moveTo(x, y)
@@ -514,7 +531,6 @@ class FishingBot():
 
             if self.stop_event.is_set():
                 return
-
 
 
 if __name__ == "__main__": 
