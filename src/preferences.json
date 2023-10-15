@@ -1,6 +1,7 @@
 {
     "Catch List": [],
-    "Auto Drink": false,
-    "Remember List": false,
-    "Color Theme": "blue"
+    "auto drink": false,
+    "remember list": false,
+    "Color Theme": "blue",
+    "grayscale": false
 }
