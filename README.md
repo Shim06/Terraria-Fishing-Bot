@@ -16,10 +16,10 @@ https://github.com/Shim06/Terraria-Fishing-Bot/assets/50046854/47f02e6d-a93a-46e
 * Ensure that the fishing area is well-lit and maximize visibility of the sonar potion text, while avoiding any obstructions such as the mouse cursor.
 * Configure the Quick Buff function to be bound to the key `B` in the game's keybind settings
 * Upon selecting the desired catches, equip your fishing rod of choice and right-click on the desired fishing spot and wait until the bot casts the fishing rod.
-* Ensure the correct UI scaling is being used for game. See [UI Scaling Percentage](#UI-Scaling-Percentage) for more information.
+* Ensure the correct in-game UI scaling is being used for game. See [UI Scaling Percentage](#UI-Scaling-Percentage) for more information.
 
 ## UI Scaling Percentage
-Use the given UI Scaling percentages according to your screen resolution:
+Use the given in-game UI Scaling percentages according to your screen resolution:
 * 3840 x 2160 - 200%
 * 2560 x 1440 - 134%
 * 1920 x 1080 - 100%
@@ -28,11 +28,11 @@ Use the given UI Scaling percentages according to your screen resolution:
 * 1366 x 768 - 71%
 * 1280 x 720 - 67%
 
-If the resolution is not here, use the following formula to calculate the UI scaling percentage:
+If the resolution is not here, use the following formula to calculate the in-game UI scaling percentage:
 
 `(Screen Resolution / 1080) * 100`
 
-Round off the value to get the UI scaling.
+Round off the value to get the in-game UI scaling.
 
 ## Why did I make this?
 
